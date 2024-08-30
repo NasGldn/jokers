@@ -3,172 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jokers AD</title>
+    <title>Le concept de joker n'existe plus</title>
+    <!-- Lien vers le CDN de Bootstrap -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .jumbotron {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .btn-joker {
-            font-size: 18px;
-            margin-top: 20px;
-        }
-        .counter, .max-jokers {
-            font-size: 20px;
-            margin-top: 20px;
-        }
-        .spinner-border {
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8 col-lg-6">
-                <div class="jumbotron">
-                    <h1 class="display-4">Jokers AD</h1>
-                    <p class="lead">Plateforme d'alerting en direct de l'utilisation des jokers. Ce n'est pas une blague</p>
-                    <hr class="my-4">
-                    <!-- Spinner de chargement -->
-                    <div id="loadingSpinner" class="spinner-border text-primary" role="status">
-                        <span class="sr-only">Chargement...</span>
-                    </div>
-                    <!-- Boutons et compteur de jokers cachés jusqu'au chargement -->
-                    <div id="jokerContent" style="display: none;">
-                        <button class="btn btn-primary btn-lg btn-joker" onclick="useJoker()"><i class="fas fa-magic"></i> Utiliser un Joker</button>
-                        <button class="btn btn-secondary btn-lg btn-joker mt-2" onclick="recoverJoker()"><i class="fas fa-undo"></i> Récupérer un Joker, c'était une blague</button>
-                        <div class="counter mt-3">Jokers restants : <span id="jokerCount"></span></div>
-                        <div class="max-jokers">Nombre maximum de jokers : <span id="jokerMax"></span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+    <div class="container text-center mt-5">
+        <h1>Le concept de joker n'existe plus</h1>
+        <!-- Image du drapeau du Maroc -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg" class="img-fluid mt-3" alt="Drapeau du Maroc" style="max-width: 200px;">
+        <!-- Nouveau texte sous l'image -->
+        <p class="mt-4">Pourquoi tu es venu ici même ?? Une alerte a été envoyée quand même au cas où.</p>
+        
+        <!-- Bouton pour envoyer un SMS avec un autre message -->
+        <button id="curiosityButton" class="btn btn-primary mt-3">C'était juste de la curiosité</button>
     </div>
 
+    <!-- Script Bootstrap (JavaScript) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Script pour afficher l'alerte et appeler l'API -->
     <script>
-        // Utilisation de ton binId et apiKey
-        const binId = "66c8c16dacd3cb34a8787bf4";
-        const apiKey = "$2a$10$wDgVdS1RoF3zZLfBkEBzSukBGs485SsV/X.PtDJCg6V.LK/Qb1mFG";
-        let jokerCount;
-        let jokerMax;
+        window.onload = function() {
+            // Affiche une alerte
+            alert("Pourquoi tu es venu ici même ?? Une alerte a été envoyée quand même au cas où.");
 
-        // Fonction pour récupérer le nombre de jokers restants et maximum depuis JSONBin.io
-        function loadJokers() {
-            fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                method: 'GET',
-                headers: {
-                    'X-Access-Key': apiKey
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                jokerCount = data.record.jokerCount;
-                jokerMax = data.record.jokerMax;
-                document.getElementById('jokerCount').innerText = jokerCount;
-                document.getElementById('jokerMax').innerText = jokerMax;
-                // Cacher le spinner et afficher le contenu
-                document.getElementById('loadingSpinner').style.display = 'none';
-                document.getElementById('jokerContent').style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Erreur lors du chargement des jokers:', error);
-                alert("Erreur lors du chargement des données. Veuillez réessayer plus tard.");
-                document.getElementById('loadingSpinner').style.display = 'none';
-            });
-        }
+            // Appel à l'API pour envoyer un SMS à l'ouverture de la page
+            fetch('https://smsapi.free-mobile.fr/sendmsg?user=55327617&pass=IcMvKIgImTHk8z&msg=ELLE%20EST%20REVENUE%20SUR%20LA%20PAGE')
+                .then(response => {
+                    if (response.ok) {
+                        console.log("SMS envoyé avec succès à l'ouverture.");
+                    } else {
+                        console.error("Erreur lors de l'envoi du SMS à l'ouverture.");
+                    }
+                })
+                .catch(error => console.error("Erreur de requête à l'ouverture:", error));
+        };
 
-        // Fonction pour envoyer un SMS "ALERTE" via l'API Free Mobile
-        function sendSmsAlert() {
-            const message = `ALERTE - Jokers restants : ${jokerCount}`;
-            fetch(`https://smsapi.free-mobile.fr/sendmsg?user=55327617&pass=IcMvKIgImTHk8z&msg=${encodeURIComponent(message)}`)
-            .then(response => {
-                if (response.ok) {
-                    console.log(`SMS 'ALERTE' envoyé avec succès. Jokers restants : ${jokerCount}`);
-                } else {
-                    console.error("Erreur lors de l'envoi du SMS");
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de l\'envoi du SMS:', error);
-            });
-        }
-
-        // Fonction pour envoyer un SMS "FAUSSE ALERTE" via l'API Free Mobile
-        function sendFalseAlert() {
-            const message = `FAUSSE ALERTE - Jokers restants : ${jokerCount}`;
-            fetch(`https://smsapi.free-mobile.fr/sendmsg?user=55327617&pass=IcMvKIgImTHk8z&msg=${encodeURIComponent(message)}`)
-            .then(response => {
-                if (response.ok) {
-                    console.log(`SMS 'FAUSSE ALERTE' envoyé avec succès. Jokers restants : ${jokerCount}`);
-                } else {
-                    console.error("Erreur lors de l'envoi du SMS");
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de l\'envoi du SMS:', error);
-            });
-        }
-
-        // Fonction pour utiliser un joker
-        function useJoker() {
-            if (jokerCount > 0) {
-                jokerCount--;
-                updateJokerCount();
-                alert("Joker utilisé ! Stylé !!!!");
-                // Appeler l'API SMS "ALERTE" après l'utilisation d'un joker
-                sendSmsAlert();
-            } else {
-                alert("Tous les jokers ont été utilisés, mega stylé !");
-            }
-        }
-
-        // Fonction pour récupérer un joker
-        function recoverJoker() {
-            if (jokerCount < jokerMax) {
-                jokerCount++;
-                updateJokerCount();
-                alert("Joker récupéré ! On a eu chaud");
-                // Appeler l'API SMS "FAUSSE ALERTE" après la récupération d'un joker
-                sendFalseAlert();
-            } else {
-                alert("Crois pas tu vas gratter des jokers comme ça");
-            }
-        }
-
-        // Fonction pour mettre à jour le nombre de jokers dans JSONBin.io
-        function updateJokerCount() {
-            fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Access-Key': apiKey
-                },
-                body: JSON.stringify({ jokerCount, jokerMax })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('jokerCount').innerText = jokerCount;
-            })
-            .catch(error => {
-                console.error('Erreur lors de la mise à jour des jokers:', error);
-                alert("Erreur lors de la mise à jour. Veuillez réessayer.");
-            });
-        }
-
-        // Charger le nombre de jokers au démarrage
-        loadJokers();
+        // Ajouter un gestionnaire d'événements pour le bouton
+        document.getElementById('curiosityButton').onclick = function() {
+            // Appel à l'API pour envoyer un SMS avec un autre message
+            fetch('https://smsapi.free-mobile.fr/sendmsg?user=55327617&pass=IcMvKIgImTHk8z&msg=C%27%C3%A9tait%20juste%20de%20la%20curiosit%C3%A9%20trkl%20frero')
+                .then(response => {
+                    if (response.ok) {
+                        console.log("SMS de curiosité envoyé avec succès.");
+                    } else {
+                        console.error("Erreur lors de l'envoi du SMS de curiosité.");
+                    }
+                })
+                .catch(error => console.error("Erreur de requête de curiosité:", error));
+        };
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
