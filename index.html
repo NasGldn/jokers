@@ -1,68 +1,156 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le concept de joker n'existe plus</title>
-    <!-- Lien vers le CDN de Bootstrap -->
+    <title>Tu veux ?</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            height: 400px;
+        }
+        .btn-option {
+            width: 150px;
+            margin: 5px;
+        }
+        /* Style pour donner un effet de "désordre" */
+        .disordered {
+            position: absolute;
+            transform: rotate(calc(-10deg + 20deg * random()));
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Audio de fond pour la musique orientale -->
-    <audio id="background-music" autoplay loop>
-        <source src="./Quitara.mp3" type="audio/mpeg">
-        Votre navigateur ne supporte pas l'élément audio.
-    </audio>
-
     <div class="container text-center mt-5">
-        <h1>Le concept de joker n'existe plus</h1>
-        <!-- Image du drapeau du Maroc -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg" class="img-fluid mt-3" alt="Drapeau du Maroc" style="max-width: 200px;">
-        <!-- Nouveau texte sous l'image -->
-        <p class="mt-4">Pourquoi tu es venu ici même ?? Une alerte a été envoyée quand même au cas où.</p>
-        
-        <!-- Bouton pour envoyer un SMS avec un autre message -->
-        <button id="curiosityButton" class="btn btn-primary mt-3">C'était juste de la curiosité</button>
+        <h1>Tu veux ?</h1>
+        <div id="buttonsContainer" class="btn-container mt-4">
+            <!-- Les boutons vont être générés ici par JavaScript -->
+        </div>
+        <button id="otherOptionsButton" class="btn btn-info mt-3">Voir les autres propositions</button>
     </div>
 
-    <!-- Script Bootstrap (JavaScript) -->
+    <script>
+        const apiUrl = 'https://smsapi.free-mobile.fr/sendmsg?user=55327617&pass=IcMvKIgImTHk8z&msg=';
+        let nonButton = null; // Référence du bouton "non" pour le déplacer
+        let firstRun = true; // Indicateur pour savoir si c'est le premier tour
+
+        // Fonction pour générer des boutons "oui", "je sais pas", ou "non"
+        function generateOptions() {
+            const buttonsContainer = document.getElementById('buttonsContainer');
+
+            // Si c'est le premier tour, générer obligatoirement un bouton "Je sais pas"
+            if (firstRun) {
+                const unsureButton = document.createElement('button');
+                unsureButton.textContent = "Je sais pas";
+                unsureButton.className = 'btn btn-warning btn-option disordered';
+                unsureButton.style.top = Math.random() * 100 + '%';
+                unsureButton.style.left = Math.random() * 100 + '%';
+
+                // Gestionnaire d'événement pour le bouton "Je sais pas"
+                unsureButton.onclick = function() {
+                    alert("Tu es indécis, essaie encore !");
+                };
+
+                // Ajouter le bouton "Je sais pas" au conteneur
+                buttonsContainer.appendChild(unsureButton);
+                firstRun = false; // Marquer la fin du premier tour
+            }
+
+            for (let i = 0; i < 6; i++) {
+                const randomChance = Math.floor(Math.random() * 30) + 1; // Générer un nombre aléatoire entre 1 et 30
+                const button = document.createElement('button');
+                button.className = 'btn btn-success btn-option disordered';
+                button.style.top = Math.random() * 100 + '%'; // Position aléatoire verticale
+                button.style.left = Math.random() * 100 + '%'; // Position aléatoire horizontale
+
+                if (randomChance === 30) {
+                    const type = Math.random() > 0.5 ? 'Je sais pas' : 'Non';
+                    if (type === 'Je sais pas' && !firstRun) {
+                        button.textContent = "Je sais pas";
+                        button.className = 'btn btn-warning btn-option disordered';
+                    } else {
+                        button.textContent = "Non";
+                        button.className = 'btn btn-danger btn-option disordered';
+                        nonButton = button; // Référence pour gérer le déplacement du bouton "non"
+                    }
+                } else {
+                    button.textContent = "Oui";
+                }
+
+                // Gestionnaire d'événement au clic
+                button.onclick = function() {
+                    if (button.textContent === "Oui") {
+                        handleYesClick();
+                    } else if (button.textContent === "Je sais pas") {
+                        alert("Tu es indécis, essaie encore !");
+                    } else if (button.textContent === "Non") {
+                        moveNonButton(); // Appel à la fonction pour déplacer le bouton "non"
+                    }
+                };
+
+                // Ajouter le bouton au conteneur
+                buttonsContainer.appendChild(button);
+            }
+        }
+
+        // Fonction pour envoyer un SMS via l'API et afficher "félicitations"
+        function handleYesClick() {
+            // Envoie un SMS
+            fetch(apiUrl + encodeURIComponent("Tu as cliqué sur Oui !"))
+                .then(response => {
+                    if (response.ok) {
+                        console.log("SMS envoyé avec succès.");
+                    } else {
+                        console.error("Erreur lors de l'envoi du SMS.");
+                    }
+                })
+                .catch(error => console.error("Erreur de requête:", error));
+
+            // Supprimer tous les boutons
+            const buttonsContainer = document.getElementById('buttonsContainer');
+            buttonsContainer.innerHTML = '';
+
+            // Supprimer le bouton "Voir les autres propositions"
+            const otherOptionsButton = document.getElementById('otherOptionsButton');
+            otherOptionsButton.remove();
+
+            // Afficher le message de félicitations
+            const message = document.createElement('h2');
+            message.textContent = "Félicitations ! Tu as fait le bon choix.";
+            buttonsContainer.appendChild(message);
+        }
+
+        // Fonction pour déplacer le bouton "non" et afficher une alerte
+        function moveNonButton() {
+            if (nonButton) {
+                // Déplacer le bouton à une nouvelle position aléatoire
+                nonButton.style.top = Math.random() * 100 + '%';
+                nonButton.style.left = Math.random() * 100 + '%';
+                alert("Oups le bouton a bougé !");
+            }
+        }
+
+        // Générer les boutons lors du chargement de la page
+        window.onload = function() {
+            generateOptions();
+        };
+
+        // Gérer le clic sur le bouton "Voir les autres propositions"
+        document.getElementById('otherOptionsButton').onclick = function() {
+            generateOptions(); // Générer et ajouter une nouvelle série de boutons
+        };
+    </script>
+
+    <!-- Script Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- Script pour afficher l'alerte et appeler l'API -->
-    <script>
-        window.onload = function() {
-            // Affiche une alerte
-            alert("Pourquoi tu es venu ici même ?? Une alerte a été envoyée quand même au cas où.");
-
-            // Appel à l'API pour envoyer un SMS à l'ouverture de la page
-            fetch('https://smsapi.free-mobile.fr/sendmsg?user=55327617&pass=IcMvKIgImTHk8z&msg=ELLE%20EST%20REVENUE%20SUR%20LA%20PAGE')
-                .then(response => {
-                    if (response.ok) {
-                        console.log("SMS envoyé avec succès à l'ouverture.");
-                    } else {
-                        console.error("Erreur lors de l'envoi du SMS à l'ouverture.");
-                    }
-                })
-                .catch(error => console.error("Erreur de requête à l'ouverture:", error));
-        };
-
-        // Ajouter un gestionnaire d'événements pour le bouton
-        document.getElementById('curiosityButton').onclick = function() {
-            // Appel à l'API pour envoyer un SMS avec un autre message
-            fetch('https://smsapi.free-mobile.fr/sendmsg?user=55327617&pass=IcMvKIgImTHk8z&msg=C%27%C3%A9tait%20juste%20de%20la%20curiosit%C3%A9%20trkl%20frero')
-                .then(response => {
-                    if (response.ok) {
-                        console.log("SMS de curiosité envoyé avec succès.");
-                    } else {
-                        console.error("Erreur lors de l'envoi du SMS de curiosité.");
-                    }
-                })
-                .catch(error => console.error("Erreur de requête de curiosité:", error));
-        };
-    </script>
 
 </body>
 </html>
