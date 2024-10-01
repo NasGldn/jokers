@@ -79,9 +79,25 @@
                     <p>Compatibilité: 99% - C'est l'amour fou ! 💖</p>
                     <p>Ces deux prénoms sont faits l'un pour l'autre. Les astres s'alignent pour vous offrir une relation épanouissante, pleine de passion et de complicité. Préparez-vous à vivre une histoire d'amour intense et fusionnelle, un lien émotionnel fort qui ne fera que grandir avec le temps. 💑✨</p>`;
             }
+            // Si Nasri et Elie
+            else if ((prenom1 === 'nasri' && prenom2 === 'elie') || (prenom1 === 'elie' && prenom2 === 'nasri')) {
+                resultDiv.classList.add('alert-success');
+                resultDiv.innerHTML = `
+                    <p>Compatibilité: 95% - Les astres sont alignés entre ces deux personnes ! 🌟</p>
+                    <p>Nasri et Elie partagent une connexion rare et spéciale. Leur relation est marquée par une harmonie naturelle, un respect mutuel et une belle complicité. Les astres semblent avoir tracé leur chemin ensemble. 💖</p>`;
+            }
+            // Si Elie et Adeliz
+            else if ((prenom1 === 'elie' && prenom2 === 'adeliz') || (prenom1 === 'adeliz' && prenom2 === 'elie')) {
+                resultDiv.classList.add('alert-info');
+                resultDiv.innerHTML = `
+                    <p>Compatibilité: 20% - Ça va tranquille les frères ! 😎</p>
+                    <p>Il n'y a pas beaucoup de compatibilité amoureuse ici, mais vous pouvez certainement passer de bons moments entre amis ! L'ambiance sera détendue et vous vous entendrez bien... sans plus. 😉</p>`;
+            }
             // Si Adeliz ou Nasri est avec un autre prénom
-            else if ((prenom1 === 'adeliz' && prenom2 !== 'nasri') || (prenom2 === 'adeliz' && prenom1 !== 'nasri') || 
-                     (prenom1 === 'nasri' && prenom2 !== 'adeliz') || (prenom2 === 'nasri' && prenom1 !== 'adeliz')) {
+            else if ((prenom1 === 'adeliz' && prenom2 !== 'nasri' && prenom2 !== 'elie') || 
+                     (prenom2 === 'adeliz' && prenom1 !== 'nasri' && prenom1 !== 'elie') || 
+                     (prenom1 === 'nasri' && prenom2 !== 'adeliz' && prenom2 !== 'elie') || 
+                     (prenom2 === 'nasri' && prenom1 !== 'adeliz' && prenom1 !== 'elie')) {
                 resultDiv.classList.add('alert-danger');
                 resultDiv.innerHTML = `
                     <p>Compatibilité: 0% - Aucune chance de succès. 💔</p>
