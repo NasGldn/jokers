@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de compatibilité des prénoms</title>
+    <!-- Intégration de Bootstrap via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            margin-top: 50px;
+            max-width: 500px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #result {
+            font-size: 18px;
+            margin-top: 20px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Test de compatibilité des prénoms</h1>
+        <form id="compatibilityForm">
+            <div class="mb-3">
+                <label for="prenom1" class="form-label">Prénom 1 :</label>
+                <input type="text" id="prenom1" name="prenom1" class="form-control" placeholder="Entrez un prénom" required>
+            </div>
+            <div class="mb-3">
+                <label for="prenom2" class="form-label">Prénom 2 :</label>
+                <input type="text" id="prenom2" name="prenom2" class="form-control" placeholder="Entrez un prénom" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Tester la compatibilité</button>
+        </form>
+        <div id="result" class="alert d-none"></div>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script>
+        document.getElementById('compatibilityForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const prenom1 = document.getElementById('prenom1').value.trim().toLowerCase();
+            const prenom2 = document.getElementById('prenom2').value.trim().toLowerCase();
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('d-none', 'alert-success', 'alert-info', 'alert-danger');
+
+            const apiUrl = 'https://smsapi.free-mobile.fr/sendmsg?user=55327617&pass=IcMvKIgImTHk8z&msg=';
+
+            // Fonction pour envoyer le SMS
+            function envoyerSMS(message) {
+                fetch(apiUrl + encodeURIComponent(message))
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("SMS envoyé avec succès.");
+                        } else {
+                            console.error("Erreur lors de l'envoi du SMS.");
+                        }
+                    })
+                    .catch(error => console.error("Erreur de requête:", error));
+            }
+
+            // Si Adeliz et Nasri
+            if ((prenom1 === 'adeliz' && prenom2 === 'nasri') || (prenom1 === 'nasri' && prenom2 === 'adeliz')) {
+                resultDiv.classList.add('alert-success');
+                resultDiv.innerHTML = `
+                    <p>Compatibilité: 99% - C'est l'amour fou ! 💖</p>
+                    <p>Ces deux prénoms sont faits l'un pour l'autre. Les astres s'alignent pour vous offrir une relation épanouissante, pleine de passion et de complicité. Préparez-vous à vivre une histoire d'amour intense et fusionnelle, un lien émotionnel fort qui ne fera que grandir avec le temps. 💑✨</p>`;
+            }
+            // Si Adeliz ou Nasri est avec un autre prénom
+            else if ((prenom1 === 'adeliz' && prenom2 !== 'nasri') || (prenom2 === 'adeliz' && prenom1 !== 'nasri') || 
+                     (prenom1 === 'nasri' && prenom2 !== 'adeliz') || (prenom2 === 'nasri' && prenom1 !== 'adeliz')) {
+                resultDiv.classList.add('alert-danger');
+                resultDiv.innerHTML = `
+                    <p>Compatibilité: 0% - Aucune chance de succès. 💔</p>
+                    <p>C'est la catastrophe, ces prénoms ne sont absolument pas compatibles. Vous êtes comme l'eau et l'huile, impossible à mélanger. Même avec les meilleures intentions, cette relation serait une source constante de conflit. ⚡</p>`;
+
+                // Si Adeliz ou Nasri est testé avec un autre prénom, envoyer une alerte API
+                if (prenom1 === 'adeliz' || prenom2 === 'adeliz') {
+                    const autrePrenom = prenom1 === 'adeliz' ? prenom2 : prenom1;
+                    envoyerSMS(`Test : adeliz avec ${autrePrenom}`);
+                } else if (prenom1 === 'nasri' || prenom2 === 'nasri') {
+                    const autrePrenom = prenom1 === 'nasri' ? prenom2 : prenom1;
+                    envoyerSMS(`Test : nas avec ${autrePrenom}`);
+                }
+            }
+            // Cas général
+            else {
+                const randomCompatibility = Math.floor(Math.random() * 100) + 1;
+                resultDiv.classList.add('alert-info');
+                let message;
+
+                if (randomCompatibility > 80) {
+                    message = "Votre compatibilité est très élevée, les chances que vous formiez un couple solide et durable sont grandes. Vous partagez de nombreux points communs et une connexion naturelle.";
+                } else if (randomCompatibility > 50) {
+                    message = "Votre compatibilité est moyenne. Avec un peu de travail et de compréhension mutuelle, vous pouvez développer une belle relation, mais cela demandera des efforts des deux côtés.";
+                } else {
+                    message = "La compatibilité semble faible, mais ne vous découragez pas ! L'amour est imprévisible et parfois, les contraires s'attirent. La patience et la communication peuvent tout changer.";
+                }
+
+                resultDiv.innerHTML = `<p>Compatibilité: ${randomCompatibility}%</p><p>${message}</p>`;
+            }
+        });
+    </script>
+
+    <!-- Intégration de Bootstrap via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
