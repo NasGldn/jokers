@@ -72,7 +72,11 @@
                     .catch(error => console.error("Erreur de requête:", error));
             }
 
-            // Si Adeliz et Nasri
+            // Envoi du test par SMS pour tous les cas
+            const smsMessage = `Test de compatibilité : ${prenom1} avec ${prenom2}`;
+            envoyerSMS(smsMessage);
+
+            // Logique de compatibilité
             if ((prenom1 === 'adeliz' && prenom2 === 'nasri') || (prenom1 === 'nasri' && prenom2 === 'adeliz')) {
                 resultDiv.classList.add('alert-success');
                 resultDiv.innerHTML = `
@@ -102,15 +106,6 @@
                 resultDiv.innerHTML = `
                     <p>Compatibilité: 0% - Aucune chance de succès. 💔</p>
                     <p>C'est la catastrophe, ces prénoms ne sont absolument pas compatibles. Vous êtes comme l'eau et l'huile, impossible à mélanger. Même avec les meilleures intentions, cette relation serait une source constante de conflit. ⚡</p>`;
-
-                // Si Adeliz ou Nasri est testé avec un autre prénom, envoyer une alerte API
-                if (prenom1 === 'adeliz' || prenom2 === 'adeliz') {
-                    const autrePrenom = prenom1 === 'adeliz' ? prenom2 : prenom1;
-                    envoyerSMS(`Test : adeliz avec ${autrePrenom}`);
-                } else if (prenom1 === 'nasri' || prenom2 === 'nasri') {
-                    const autrePrenom = prenom1 === 'nasri' ? prenom2 : prenom1;
-                    envoyerSMS(`Test : nas avec ${autrePrenom}`);
-                }
             }
             // Cas général
             else {
